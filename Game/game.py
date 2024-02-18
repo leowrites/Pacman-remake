@@ -66,11 +66,16 @@ class Game:
 
     def __init__(self):
         self.running = True
+        clock = pygame.time.Clock()
+        fps = 60
 
         while self.running:
             self.event_handler()
+            if not self.running:
+                break
             self.update()
             self.draw()
+            clock.tick(fps)
 
     def update(self):
         global change_image
@@ -110,7 +115,8 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                self.running = False
+                break
 
             key_input = pygame.key.get_pressed()
 
