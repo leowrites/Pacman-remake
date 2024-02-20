@@ -1,6 +1,7 @@
 import random
 import pygame
 import numpy as np
+from util.utility import pixel_to_grid
 
 UNIT_SIZE = 30
 WALL_COLOR = pygame.Color(0, 0, 128)
@@ -87,15 +88,18 @@ class Pacman:
 
     def eat_coin(self, coin_rects, total_coins):
         # if collides, return true and remove the coin
-        for y, rows in enumerate(coin_rects):
-            for x in range(len(rows)):
-                this_coin = coin_rects[y][x]
-                if this_coin != 0:
-                    if pygame.Rect.colliderect(self.rect, this_coin):
-                        coin_rects[y][x] = 0
-                        total_coins -= 1
-                        self.score += 100
-                        return coin_rects, total_coins
+        top_left = pixel_to_grid(self.rect.topleft)
+        top_right = pixel_to_grid(self.rect.topright)
+        bottom_left = pixel_to_grid(self.rect.bottomleft)
+        bottom_right = pixel_to_grid(self.rect.bottomright)
+
+        corners = [top_left, top_right, bottom_left, bottom_right]
+        for corner in corners:
+            if coin_rects[corner[1]][corner[0]] != 0 and pygame.Rect.colliderect(self.rect, coin_rects[corner[1]][corner[0]]):
+                coin_rects[corner[1]][corner[0]] = 0
+                total_coins -= 1
+                self.score += 100
+
         return coin_rects, total_coins
 
     def is_alive(self, ghosts):
