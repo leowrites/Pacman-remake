@@ -1,0 +1,5 @@
+TODO Optimization:
+1. Simplify loops and remove nested loops where appropriate
+2. Evaluate the possibility of letting each ghost run on its own thread to perform computation
+3. Create some kind of master list containing all assets to improve cache friendliness when drawing (drawing requires going through all assets, currently they are not in consequtive memory)
+4. Consider other techniques to improve cache hits
