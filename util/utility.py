@@ -7,6 +7,12 @@ pygame.font.init()
 SECONDS = 10
 COUNTDOWN = SECONDS * 60
 UNIT_SIZE = 30
+TILE_SIZE = (30, 30)
+WALL_SIZE = (20, 20)
+COIN_SIZE = (15, 15)
+BLACK = pygame.Color(0, 0, 0)
+WHITE = pygame.Color(255, 255, 255)
+WALL_BLUE = pygame.Color(0, 0, 128)
 
 def load_images_pacman():
     PACMAN_RIGHT_OPEN = pygame.transform.smoothscale(pygame.image.load("assets/pacman_right_open.png"), (20, 20))
@@ -102,3 +108,6 @@ def generate_random_loc(game_map):
 
 def pixel_to_grid(pixel):
     return [pixel[0] // UNIT_SIZE, pixel[1] // UNIT_SIZE]
+
+def grid_to_pixel(x, y):
+    return [x * UNIT_SIZE + 15, y * UNIT_SIZE + 15]
