@@ -5,7 +5,7 @@ from Players.inky import Inky
 from Players.pinky import Pinky
 from Players.blinky import Blinky
 from Players.clyde import Clyde
-import utility
+import util.utility as utility
 
 """
 write a pacman game so it is both playable by a human and can train A.I.

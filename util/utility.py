@@ -6,7 +6,7 @@ pygame.font.init()
 
 SECONDS = 10
 COUNTDOWN = SECONDS * 60
-
+UNIT_SIZE = 30
 
 def load_images_pacman():
     PACMAN_RIGHT_OPEN = pygame.transform.smoothscale(pygame.image.load("assets/pacman_right_open.png"), (20, 20))
@@ -98,3 +98,7 @@ def generate_random_loc(game_map):
         return generate_random_loc(game_map)
     else:
         return cord
+
+
+def pixel_to_grid(pixel):
+    return [pixel[0] // UNIT_SIZE, pixel[1] // UNIT_SIZE]
