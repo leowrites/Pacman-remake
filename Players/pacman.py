@@ -1,7 +1,7 @@
 import random
 import pygame
 import numpy as np
-from util.utility import pixel_to_grid
+from util.utility import (pixel_to_grid, grid_to_pixel, PacmanState)
 
 UNIT_SIZE = 30
 WALL_COLOR = pygame.Color(0, 0, 128)
@@ -29,9 +29,9 @@ class Pacman:
         self.game_map = game_map
         self.image = image
         self.current_image = 1
-        self.mode = 'normal'
-        self.rect = self.image[1].get_rect(
-            center=(self.cur_location_on_grid[0] * UNIT_SIZE + 15, self.cur_location_on_grid[1] * UNIT_SIZE + 15))
+        self.mode = PacmanState.NORMAL
+        self.rect = self.image[1].get_rect(center=
+                                           grid_to_pixel(self.cur_location_on_grid[0], self.cur_location_on_grid[1]))
 
         # this is used to locate the pacman on the grid
         self.game_window = game_window
@@ -56,7 +56,7 @@ class Pacman:
         """
         for cherry_rect in cherry_rects:
             if pygame.rect.Rect.colliderect(self.rect, cherry_rect):
-                self.mode = 'eat ghost'
+                self.mode = PacmanState.EAT_GHOST
                 self.score += 500
                 cherry_rects.remove(cherry_rect)
         return cherry_rects
@@ -109,7 +109,7 @@ class Pacman:
         """
         for ghost in ghosts:
             if pygame.rect.Rect.colliderect(self.rect, ghost.rect):
-                if self.mode == 'eat ghost':
+                if self.mode == PacmanState.EAT_GHOST:
                     self.score += 2000
                     ghosts.remove(ghost)
                     return ghosts, ghost

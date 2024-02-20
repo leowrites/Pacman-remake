@@ -1,6 +1,7 @@
 import pygame
 from pathfinding.core.grid import Grid
 from random import randint
+from enum import Enum
 
 pygame.font.init()
 
@@ -87,23 +88,21 @@ def count_down():
     should subtract 1 from COUNTDOWN 60 times a second to acheive countdown
     :return: state of the pacman
     """
+    # redo this with events
     global COUNTDOWN
     COUNTDOWN -= 1
     if COUNTDOWN == 0:
         # resets the clock
         COUNTDOWN = SECONDS * 60
-        return 'normal'
-    return 'eat ghost'
+        return PacmanState.NORMAL
+    return PacmanState.EAT_GHOST
 
 
 def generate_random_loc(game_map):
-    x = randint(1, 18)
-    y = randint(1, 18)
-    cord = [x, y]
-    if game_map[y][x] != 1:
-        return generate_random_loc(game_map)
-    else:
-        return cord
+    cord = [randint(1, 18), randint(1, 18)]
+    while game_map[cord[0]][cord[1]] != 1:
+        cord = generate_random_loc(game_map)
+    return cord
 
 
 def pixel_to_grid(pixel):
@@ -111,3 +110,18 @@ def pixel_to_grid(pixel):
 
 def grid_to_pixel(x, y):
     return [x * UNIT_SIZE + 15, y * UNIT_SIZE + 15]
+
+class PacmanState(Enum):
+    EAT_GHOST = 0
+    NORMAL = 1
+
+class GhostState(Enum):
+    CHASE = 0
+    HIDE = 1
+    SCARED = 2
+
+class Direction(Enum):
+    UP = 0
+    DOWN = 1
+    LEFT = 2
+    RIGHT = 3

@@ -44,10 +44,10 @@ class Game:
     game_map = Map(surface)
     coins, total_coins = game_map.spawn_coins(COIN_IMAGE)
     pacman = Pacman(game_map.game_map, surface, PACMAN_IMAGES)
-    inky = Inky([9, 11], GHOST_IMAGES['inky'], 0, surface, 'chase')
-    pinky = Pinky([10, 11], GHOST_IMAGES['pinky'], 0, surface, 'chase')
-    blinky = Blinky([9, 12], GHOST_IMAGES['blinky'], 0, surface, 'chase')
-    clyde = Clyde([10, 12], GHOST_IMAGES['clyde'], 0, surface, 'chase')
+    inky = Inky([9, 11], GHOST_IMAGES['inky'], 0, surface, utility.GhostState.CHASE)
+    pinky = Pinky([10, 11], GHOST_IMAGES['pinky'], 0, surface, utility.GhostState.CHASE)
+    blinky = Blinky([9, 12], GHOST_IMAGES['blinky'], 0, surface, utility.GhostState.CHASE)
+    clyde = Clyde([10, 12], GHOST_IMAGES['clyde'], 0, surface, utility.GhostState.CHASE)
     ghost_rects = [inky.rect, pinky.rect, clyde.rect, blinky.rect]
     cherry_rects = game_map.spawn_cherry_rects(CHERRY_IMAGE)
     ghosts = [inky, pinky, blinky, clyde]
@@ -75,14 +75,11 @@ class Game:
                 break
             self.update()
             self.draw()
+            print(clock.get_fps())
             clock.tick(fps)
 
     def update(self):
-        global change_image
-        global change_path
-
         if self.pacman.alive:
-
             # pacman movement
             self.pacman.movement_restrictions()
             if self.pacman.moving:
@@ -92,15 +89,15 @@ class Game:
             self.ghosts, ghost_dead = self.pacman.is_alive(self.ghosts)
             if ghost_dead is not None:
                 self.ghost_dead.append(ghost_dead)
-            if self.pacman.mode == 'eat ghost':
+            if self.pacman.mode == utility.PacmanState.EAT_GHOST:
                 self.mode_eat_ghost()
 
             # ghost movement
             for ghost in self.ghosts:
-                if ghost.mode == 'chase':
+                if ghost.mode == utility.GhostState.CHASE:
                     self.mode_ghost_chase()
                     break
-                if ghost.mode == 'hide':
+                if ghost.mode == utility.GhostState.HIDE:
                     self.mode_ghost_hide()
                     break
 
@@ -160,13 +157,13 @@ class Game:
         if change_image:
             self.change_ghost_image('scared')
             for ghost in self.ghosts:
-                ghost.mode = 'hide'
+                ghost.mode = utility.GhostState.HIDE
             change_image = False
         self.pacman.mode = utility.count_down()
-        if self.pacman.mode == 'normal':
+        if self.pacman.mode == utility.PacmanState.NORMAL:
             self.change_ghost_image('normal')
             for ghost in self.ghosts:
-                ghost.mode = 'chase'
+                ghost.mode = utility.GhostState.CHASE
             change_image = True
             change_path = True
 
@@ -194,9 +191,9 @@ class Game:
             ghost.move(self.grid, pacman_cord)
 
     def change_ghost_image(self, state):
-        if state == 'scared':
+        if state == utility.GhostState.SCARED:
             self.inky.surface = self.blinky.surface = self.pinky.surface = self.clyde.surface = self.SCARED_IMAGE
-        if state == 'normal':
+        if state == utility.GhostState.CHASE:
             self.inky.surface = self.GHOST_IMAGES['inky']
             self.blinky.surface = self.GHOST_IMAGES['blinky']
             self.pinky.surface = self.GHOST_IMAGES['pinky']
@@ -248,7 +245,7 @@ class Game:
                 self.pacman.current_image = 7
 
     def pacman_movements(self, key_input):
-
+        
         if key_input[pygame.K_LEFT]:
             self.pacman.moving = True
             self.pacman.RIGHT = False
@@ -280,10 +277,10 @@ class Game:
 
     def reset(self, level):
         self.pacman = Pacman(self.game_map.game_map, self.surface, self.PACMAN_IMAGES)
-        self.inky = Inky([9, 11], self.GHOST_IMAGES['inky'], level, self.surface, 'chase')
-        self.pinky = Pinky([10, 11], self.GHOST_IMAGES['pinky'], level, self.surface, 'chase')
-        self.blinky = Blinky([9, 12], self.GHOST_IMAGES['blinky'], level, self.surface, 'chase')
-        self.clyde = Clyde([10, 12], self.GHOST_IMAGES['clyde'], level, self.surface, 'chase')
+        self.inky = Inky([9, 11], self.GHOST_IMAGES['inky'], level, self.surface, utility.GhostState.CHASE)
+        self.pinky = Pinky([10, 11], self.GHOST_IMAGES['pinky'], level, self.surface, utility.GhostState.CHASE)
+        self.blinky = Blinky([9, 12], self.GHOST_IMAGES['blinky'], level, self.surface, utility.GhostState.CHASE)
+        self.clyde = Clyde([10, 12], self.GHOST_IMAGES['clyde'], level, self.surface, utility.GhostState.CHASE)
         self.coins, self.total_coins = self.game_map.spawn_coins(self.COIN_IMAGE)
         self.ghosts = [self.inky, self.pinky, self.blinky, self.clyde]
         self.ghost_rects = [self.inky.rect, self.pinky.rect, self.blinky.rect, self.clyde.rect]
